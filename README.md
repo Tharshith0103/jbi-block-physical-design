@@ -46,8 +46,8 @@ The entire PD flow was executed using industry-standard EDA tools and methodolog
 - Created power rings around the core for VDD and VSS
 - Added power stripes/straps across the core on upper metal layers (M7, M8, M9)
 - Connected standard cell power rails (VDD/VSS) through via stacks to power stripes
-- Ran IR drop analysis and verified power delivery network integrity
-- Ensured electromigration (EM) compliance on all power nets
+- Built power rings and straps to support robust power delivery across macros and standard cells
+- Reviewed PDN quality with power-aware implementation considerations
 
 ### 4. Placement
 - Performed standard cell placement targeting timing and congestion closure
@@ -73,8 +73,8 @@ The entire PD flow was executed using industry-standard EDA tools and methodolog
 ### 7. Sign-off
 - Ran Static Timing Analysis (STA) across all corners (SS, TT, FF)
 - Verified setup and hold timing closure with positive slack
-- Performed Design Rule Check (DRC) — all violations resolved
-- Ran Layout vs. Schematic (LVS) check for netlist vs. layout verification
+- Reviewed routing and physical quality through sign-off-oriented checks
+- Prepared the design database for final physical verification flow
 - Generated final GDSII output
 
 ---
