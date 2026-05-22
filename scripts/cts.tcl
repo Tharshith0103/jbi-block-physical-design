@@ -1,113 +1,95 @@
 # =============================================================
 # JBI Block - Clock Tree Synthesis (CTS) TCL Script
-# Tool    : Cadence Innovus
-# Step    : CTS - Build and balance clock tree for 1 GHz clock
+# Tool    : Synopsys ICC2
+# Step    : CTS - Build balanced clock tree for 1 GHz clock
 # =============================================================
 
-puts "\n===== Starting Clock Tree Synthesis (CTS) ====="
+puts "\n===== Starting Clock Tree Synthesis (CTS) - Synopsys ICC2 ====="
 
 # -------------------------------------------------------------
-# Step 1: Set CTS Engine Mode
+# Step 1: Open Design
 # -------------------------------------------------------------
-setCTSMode -engine ck
-
-# Use routing guides during CTS
-setCTSMode -routeGuide true
+open_lib ./icc2_db/jbi_block.dlib
+open_block jbi_block
 
 # -------------------------------------------------------------
-# Step 2: Define CTS Specification
+# Step 2: Configure CTS Settings
 # -------------------------------------------------------------
-# Target clock skew: <= 50ps
+# Target skew  : <= 50ps
 # Target max insertion delay: <= 500ps
-# Clock: JBI_CLK (1GHz, 1ns period)
+# Clock: JBI_CLK (1 GHz, 1.0 ns period)
 
-createClockTreeSpec \
-    -bufferList {BUFFD1BWP14N16P57 BUFFD2BWP14N16P57 BUFFD4BWP14N16P57 BUFFD8BWP14N16P57} \
-    -file ./cts_spec/jbi_block_cts.ctstch
+# Set clock tree references (buffer cells)
+set_lib_cell_purpose -include cts \
+    [get_lib_cells */BUFFD*BWP14N16P57]
 
-# -------------------------------------------------------------
-# Step 3: Configure CTS Constraints
-# -------------------------------------------------------------
-# Maximum transition on clock tree buffers
-setCTSMode -maxBufTran 0.08
+# Set CTS target skew and latency
+set_clock_tree_options \
+    -target_skew 0.05 \
+    -max_transition 0.08 \
+    -max_capacitance 0.15
 
-# Maximum capacitance on clock tree nets
-setCTSMode -maxNetCap 0.15
-
-# Maximum fanout of clock buffers
-setCTSMode -maxFanout 10
-
-# Target skew
-setCTSMode -targetSkew 0.05
-
-# No inversion in clock tree
-setCTSMode -noInverter false
+puts "CTS constraints set: Skew target=50ps, MaxTran=80ps"
 
 # -------------------------------------------------------------
-# Step 4: Pre-CTS Timing Analysis
+# Step 3: Pre-CTS Optimization (place_opt)
 # -------------------------------------------------------------
-puts "Running pre-CTS timing analysis..."
+puts "Running pre-CTS placement optimization..."
 
-setAnalysisMode -analysisType onChipVariation -cppr both
-updateIoLatency -verbose
-reportClockTree -postRoute false -localSkew
+place_opt
+
+puts "Pre-CTS place_opt complete"
 
 # -------------------------------------------------------------
-# Step 5: Run Clock Tree Synthesis
+# Step 4: Run Clock Tree Synthesis
 # -------------------------------------------------------------
-puts "Running CTS..."
+puts "Running clock_opt (CTS)..."
 
-clock_design
+# ICC2 clock_opt runs CTS + post-CTS optimization in one step
+clock_opt
 
 puts "CTS complete"
 
 # -------------------------------------------------------------
-# Step 6: Post-CTS Optimization
+# Step 5: Post-CTS Timing Analysis
 # -------------------------------------------------------------
-puts "Running post-CTS optimization..."
-
-# Perform post-CTS timing optimization
-optDesign -postCTS
-
-# Fix hold violations introduced after CTS
-optDesign -postCTS -hold
-
-puts "Post-CTS optimization complete"
-
-# -------------------------------------------------------------
-# Step 7: Post-CTS Timing Report
-# -------------------------------------------------------------
-puts "Generating post-CTS timing reports..."
+puts "Checking post-CTS timing..."
 
 # Report setup timing
-reportTiming -path_type full_clock -net -nosplit \
-    -setupViewList {func_setup_view} \
+report_timing \
+    -path_type full_clock \
+    -nets \
     -max_paths 20 \
+    -delay_type max \
     > ./reports/timing_postCTS_setup.rpt
 
 # Report hold timing
-reportTiming -path_type full_clock -net -nosplit \
-    -holdViewList {func_hold_view} \
+report_timing \
+    -path_type full_clock \
+    -nets \
     -max_paths 20 \
+    -delay_type min \
     > ./reports/timing_postCTS_hold.rpt
 
-# Report clock skew
-reportClockTree -postRoute false -localSkew \
-    > ./reports/cts_skew.rpt
+# Report clock tree summary
+report_clock_qor > ./reports/clock_qor.rpt
 
-puts "Post-CTS reports generated"
+# Report QoR summary
+report_qor > ./reports/qor_postCTS.rpt
+
+puts "Post-CTS timing reports generated in ./reports/"
 
 # -------------------------------------------------------------
-# Step 8: Verify CTS Results
+# Step 6: Post-CTS DRV Check
 # -------------------------------------------------------------
-checkDesign -synthesis
-
-# Check DRVs after CTS
-reportDesignRule > ./reports/drv_postCTS.rpt
+check_design -checks pre_route_stage
 
 puts "\n===== CTS Complete ====="
 puts "Target: Skew <= 50ps, Max Insertion Delay <= 500ps"
 puts "Reports saved to ./reports/ directory"
+
+# Save block
+save_block
 
 # =============================================================
 # End of CTS Script
