@@ -98,7 +98,7 @@ jbi-block-physical-design/
 
 ## Tools Used
 
-                          | Tool                        | Purpose                                                   |
+| Tool | Purpose |
 |------------------------------|--------------------------------------------------|
 | Cadence Innovus              | Place & Route (Floorplan, Placement, CTS, Routing, GDSII) |
 | Synopsys PrimeTime (PT)      | Static Timing Analysis – Sign-off (Setup & Hold) |
