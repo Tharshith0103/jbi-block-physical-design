@@ -134,10 +134,12 @@ jbi-block-physical-design/
 
 ---
 
-## Author
+## Implemented By
 
 **Tharshith**
-ECE Graduate | VLSI Physical Design Engineer
+ECE Graduate | VLSI Physical Design Trainee
+This project was assigned and guided as part of a **VLSI Physical Design Training Program**.
+All PD stages (floorplan to GDSII) were hands-on implemented by the trainee.
 Hyderabad, India
 
 ---
