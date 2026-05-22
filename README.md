@@ -98,12 +98,13 @@ jbi-block-physical-design/
 
 ## Tools Used
 
-| Tool                   | Purpose                              |
-|------------------------|--------------------------------------|
-| Cadence Innovus        | Place & Route (Floorplan to GDSII)   |
-| Synopsys PrimeTime     | Static Timing Analysis (Sign-off)    |
-| Synopsys IC Compiler   | Synthesis reference                  |
-| OpenLane               | Open-source PD flow reference        |
+                          | Tool                        | Purpose                                                   |
+|------------------------------|--------------------------------------------------|
+| Cadence Innovus              | Place & Route (Floorplan, Placement, CTS, Routing, GDSII) |
+| Synopsys PrimeTime (PT)      | Static Timing Analysis – Sign-off (Setup & Hold) |
+| Synopsys Design Compiler     | Logic Synthesis (Gate-level Netlist generation)  |
+| OpenLane                     | Open-source RTL-to-GDSII PD flow reference       |
+| Docker                       | Container environment to run OpenLane EDA tools  |
 
 ---
 
