@@ -138,17 +138,7 @@ jbi-block-physical-design/
 
 **Tharshith**
 ECE Graduate | VLSI Physical Design Trainee
-This project was assigned and guided as part of a **VLSI Physical Design Training Program**.
+This project was assigned and guided as part of a **VLSI Physical Design Training Program** in ChipEdge.
 All PD stages (floorplan to GDSII) were hands-on implemented by the trainee.
-Hyderabad, India
+Bengaluru, India
 
----
-
-## Related Projects
-
-- [ALU Physical Design](https://github.com/Tharshith0103) — ALU block implemented using open-source PD flow
-- APEX-86 Block — Physical Design block project (upcoming)
-
----
-
-*This project was implemented as part of VLSI Physical Design training covering the complete RTL-to-GDSII flow at 14nm technology node.*
